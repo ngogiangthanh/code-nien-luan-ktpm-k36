@@ -1,0 +1,13 @@
+<?php $__env->startSection('content'); ?>
+<?php if (Session::has('error')): ?>
+  <?= trans(Session::get('reason')) ?>
+<?php elseif (Session::has('success')): ?>
+  An email with the password reset has been sent.
+<?php endif; ?>
+<form name="" id="" method="post" action="" onsubmit="">
+    <input type="text" name="email" id="" value="" placeholder="Email của bạn"/><br/>
+    &nbsp;<input type="submit" name="" id="" value="Gửi"/><br/>
+<a href="./">Quay lại khung đăng nhập</a>
+</form>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.login', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

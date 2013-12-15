@@ -1,0 +1,81 @@
+<script src="<?php echo URL; ?>public/js/jquery-1.10.2.min.js"></script>
+<script src="<?php echo URL; ?>public/js/jquery-migrate-1.2.1.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery-ui-1.10.3.custom.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.ui.touch-punch.js"></script>
+<script src="<?php echo URL; ?>public/js/nprogress.js"></script>
+<script src="<?php echo URL; ?>public/js/modernizr.js"></script>	
+<script src="<?php echo URL; ?>public/js/bootstrap.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.cookie.js"></script>	
+<script src='<?php echo URL; ?>public/js/fullcalendar.min.js'></script>	
+<script src='<?php echo URL; ?>public/js/jquery.dataTables.min.js'></script>
+<script src="<?php echo URL; ?>public/js/excanvas.js"></script>
+<script src="<?php echo URL; ?>public/js/jquery.flot.js"></script>
+<script src="<?php echo URL; ?>public/js/jquery.flot.pie.js"></script>
+<script src="<?php echo URL; ?>public/js/jquery.flot.stack.js"></script>
+<script src="<?php echo URL; ?>public/js/jquery.flot.resize.min.js"></script>
+<script src="<?php echo URL; ?>public/js/jquery.flot.time.js"></script>
+
+<script src="<?php echo URL; ?>public/js/jquery.chosen.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.uniform.min.js"></script>		
+<script src="<?php echo URL; ?>public/js/jquery.cleditor.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.noty.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.elfinder.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.raty.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.iphone.toggle.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.uploadify-3.1.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.gritter.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.imagesloaded.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.masonry.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.knob.modified.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.sparkline.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/counter.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/raphael.2.1.0.min.js"></script>
+<script src="<?php echo URL; ?>public/js/justgage.1.0.1.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/jquery.autosize.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/retina.js"></script>
+<script src="<?php echo URL; ?>public/js/jquery.placeholder.min.js"></script>
+<script src="<?php echo URL; ?>public/js/wizard.min.js"></script>
+<script src="<?php echo URL; ?>public/js/core.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/charts.min.js"></script>	
+<script src="<?php echo URL; ?>public/js/custom.min.js"></script>
+<script src="<?php echo URL; ?>public/js/jsfunction.js"></script>
+<script type="text/javascript">
+    $('body').show();
+    NProgress.start();
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 100);
+
+    new UISearch(document.getElementById('sb-search'));
+    // 
+    function OpenPop(maskId, ElementId)
+    {
+        document.getElementById(maskId).style.display = 'block';
+        document.getElementById(ElementId).style.display = 'block';
+    }
+    //
+    function ClosePop(maskId, ElementId)
+    {
+        document.getElementById(maskId).style.display = 'none';
+        document.getElementById(ElementId).style.display = 'none';
+    }
+    //
+    function trim(str) {
+        return str.replace(/^[\s]+/, "").replace(/[\s]+$/, "").replace(/[\s]{2,}/, " ");
+    }
+
+    function checkAll(bx, nameCheck) {
+        var cbs = document.getElementsByName(nameCheck);
+        for (var i = 0; i < cbs.length; i++) {
+            if (cbs[i].name == nameCheck) {
+                cbs[i].checked = bx.checked;
+            }
+        }
+    }
+    function PopUp(url){
+    new_window = window.open(url,'In','resizable=0,height=600px,width=1024px,scrollbars=yes,rollbars=yes');
+    if (window.focus)
+        new_window.focus();
+}
+</script>
