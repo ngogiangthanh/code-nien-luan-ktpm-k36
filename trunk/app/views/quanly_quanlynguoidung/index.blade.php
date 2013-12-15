@@ -1,0 +1,224 @@
+@extends('layouts.default')
+@section('content')
+<?php
+$stt = 0;
+$txtLoaiUser = '';
+$txtTK = '';
+$isFilterLoaiUser = false;
+$isTK = false;
+
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+    $stt = ($page - 1) * QUAN_LY_SO_NGUOI_DUNG_TREN_TRANG;
+}
+if (isset($_GET['txtLoaiUser'])) {
+    $txtLoaiUser = $_GET['txtLoaiUser'];
+    $isFilterLoaiUser = true;
+}
+if (isset($_GET['txtTimKiem'])) {
+    $txtTK = $_GET['txtTimKiem'];
+    $isTK = true;
+}
+?>
+<div class="row-fluid">
+    <div class="box span12">
+        <div class='box'>
+            <div class="box-header">
+                <h2>
+                    <i class="icon-user"></i>Danh Sách Người Dùng
+                </h2>
+                <div class="box-icon">
+                    <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                </div>
+            </div>
+            <div class="box-content">
+                <?php
+                if (Session::has('message')) {
+                    echo "<p style='color:green;'>" . Session::get('message') . "</p>";
+                }
+                ?>
+                <?php
+                if ($isTK || $isFilterLoaiUser) {
+                    ?>
+                    <a href="<?= URL; ?>musers/listusers">Trở về ds người dùng</a>&nbsp;&nbsp;
+                    <?php
+                }
+                ?>
+                    <div style="display: -webkit-inline-box;">
+                    <img  src="{{URL}}public/images/icon/documents.gif" name="" id="" value="" onclick="alert('In thông tin người dùng')"  title="In danh sách người dùng"/>&nbsp;
+                    <input class="form-control" style="width:220px!important;" type='text' name='txtNDTK' id='txtNDTKId' placeholder="Nhập thông tin tìm kiếm" value="<?php
+                    if ($isTK) {
+                        echo $txtTK;
+                    }
+                    ?>"/>
+                    <input type='button' name='btnTK' id='btnTKId' value='Tìm kiếm' class='btn btn-primary' onclick="return thucHienTK((document.getElementById('txtNDTKId').value))" />&nbsp;Nhóm người dùng&nbsp;
+                    <select class="form-control" style="width:220px!important;" name='loaiUser' id='loaiUserId'  onchange="thucHienLoc(document.getElementById('loaiUserId').value)">
+                        <option value="all" <?php if ($txtLoaiUser == '') echo "selected='selected'"; ?>>--- Tất cả ---</option>
+                        <option value="1" <?php if ($txtLoaiUser == '1') echo "selected='selected'"; ?>>Quản Lý</option>
+                        <option value="2" <?php if ($txtLoaiUser == '2') echo "selected='selected'"; ?>>Thủ Thư</option>
+                        <option value="3" <?php if ($txtLoaiUser == '3') echo "selected='selected'"; ?>>Người mượn CB</option>
+                        <option value="4" <?php if ($txtLoaiUser == '4') echo "selected='selected'"; ?>>Người mượn SV</option>
+                    </select>
+                    <input type='button' name='btnThem' id='btnThemId' value='Thêm người dùng' class='btn btn-primary' onclick="location.href = '<?= URL ?>musers/addusers'"/>
+
+                </div>
+                <form name="frmCheckPrint" method="post" action="<?= URL; ?>musers/prints">
+                    <table class="table table-striped ">
+                        <tbody role="alert" aria-live="polite" aria-relevant="all">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="checkboxAllId" id="checkboxAllIdId" value="" onclick="return checkAll(this, 'checkboxId[]');" title="Chọn/bỏ chọn tất cả"/>
+                                </td>
+                                <td>STT</td>
+                                <td>Tài khoản</td>
+                                <td>Tên người dùng</td>
+                                <td>Chi tiết</td>
+                                <td>Chức vụ</td>
+                                <td>Hoạt động</td>
+                                <td>Sửa</td>
+                                <td>Xóa</td>
+                            </tr>
+                            <?php
+                            $i = 0;
+                            foreach ($dsNguoiDung as $nguoiDung) {
+                                ?>
+                                <tr class="odd">
+                                    <td class=" sorting_<?= ++$i ?>">
+                                        <input type="checkbox" name="checkboxId[]" id="" value="<?= $nguoiDung->id; ?>" title="Chọn/bỏ chọn"/>
+                                    </td>
+                                    <td class="center "><?= ++$stt ?></td>
+                                    <td class="center "><?= $nguoiDung->ma_so_the ?></td>
+                                    <td class="center "><?= $nguoiDung->ho_ten ?></td>
+                                    <td class="center ">
+                                        <img src="{{URL}}public/images/icon/view.gif" name="" id="" value="" onclick="thucHienXem(<?= $nguoiDung->id; ?>)"  title="Chi tiết người dùng"/>
+                                    </td>
+                                    <td class='center'>
+                                        <?php
+                                        switch ($nguoiDung->id_nhom_quyen_han) {
+                                            case 1: echo "Quản lý";
+                                                break;
+                                            case 2: echo "Thủ thư";
+                                                break;
+                                            case 3: echo "Người mượn CB";
+                                                break;
+                                            case 4: echo "Người mượn SV";
+                                                break;
+                                        }
+                                        ?>
+                                    </td>
+                                    <td class="center ">
+                                        <input type="checkbox" name="" id="" value="" <?php if ($nguoiDung->trang_thai_hoat_dong) echo "checked='checked'"; ?>/>
+                                    </td>
+                                    <td class="center ">
+                                        <a onclick="thucHienSua(<?= $nguoiDung->id; ?>)"><img src="{{URL}}public/images/icon/edit.gif" alt="Sửa"/></a>
+                                    </td>
+                                    <td class="center ">
+                                        <img src="{{URL}}public/images/icon/delete.gif" alt="Xóa" onclick="if (confirm('Xác nhận người dùng <?= $nguoiDung->ma_so_the; ?>?')) {
+                                                    thucHienXoa(<?= $nguoiDung->id; ?>)
+                                                }"/>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </form>
+                <div class="row">
+                    <div class="col-lg-12 center">
+                        <div class="dataTables_paginate paging_bootstrap">
+                            <?php
+                            if (!$isTK && $isFilterLoaiUser) {
+                                echo $dsNguoiDung->appends(array('txtLoaiUser' => $txtLoaiUser))->links();
+                            } else if ($isTK && !$isFilterLoaiUser) {
+                                echo $dsNguoiDung->appends(array('txtTimKiem' => $txtTK))->links();
+                            } else if ($isTK && $isFilterLoaiUser) {
+                                echo $dsNguoiDung->appends(array('txtTimKiem' => $txtTK, 'txtLoaiUser' => $txtLoaiUser))->links();
+                            } else {
+                                echo $dsNguoiDung->links();
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form name='formXem' id='formXemId' method="post" action="<?= URL; ?>musers/detailsuser">
+    <?= Form::token(); ?>
+    <input type="hidden" name="txtIdUser" id="txtIdUserId" value="" />
+</form>
+<form name="formXoa" id="frmXoaId" method="post" action="<?= URL; ?>musers/deleteuser">
+    <?= Form::token(); ?>
+    <input type="hidden" name="txtIdUser" id="txtIdUserId" value="" />
+</form>
+<form name="formEdit" id="formEditId" method="get" action="<?= URL; ?>musers/edituser">
+    <?= Form::token(); ?>
+    <input type="hidden" name="txtIdUser" id="txtIdUserId" value="" />
+</form>
+<form name="frmTK" id="frmTKId" method="get" action="<?= URL; ?>musers/listusers">
+    <input type="hidden" name="txtTimKiem" id="txtTimKiemId" value=""/>
+    <?php
+    echo Form::token();
+    if ($isFilterLoaiUser) {
+        ?>
+        <input type="hidden" name="txtLoaiUser" id="txtLoaiUserId" value="<?= $txtLoaiUser; ?>" />
+        <?php
+    }
+    ?>
+</form>
+<form name="frmLoc" id="frmLocId" method="get" action="<?= URL; ?>musers/listusers">
+    <?php
+    echo Form::token();
+    if ($isTK) {
+        ?>
+        <input type="hidden" name="txtTimKiem" id="txtTimKiemId" value="<?= $txtTK; ?>"/>
+        <?php
+    }
+    ?>
+    <input type="hidden" name="txtLoaiUser" id="txtLoaiUserId" value="" />       
+</form>
+<?php
+if (Session::has('result')) {
+    if (Session::get('result')) {
+        echo "<script>alert('Xóa thành công!')</script>";
+    } else {
+        echo "<script>alert('Không thực hiện được thao tác!')</script>";
+    }
+}
+?>
+<script type='text/javascript'>
+    function thucHienXem(id) {
+        document.formXem.txtIdUser.value = id;
+        document.formXem.submit();
+    }
+    function thucHienXoa(id) {
+        document.formXoa.txtIdUser.value = id;
+        document.formXoa.submit();
+    }
+    function thucHienSua(id) {
+        document.formEdit.txtIdUser.value = id;
+        document.formEdit.submit();
+    }
+    function thucHienLoc(idLoai) {
+        document.frmLoc.txtLoaiUser.value = idLoai;
+        document.frmLoc.submit();
+    }
+    function thucHienTK(TK) {
+        var txtTK = trim(TK);
+        if ((txtTK == "" || txtTK == null))
+        {
+            alert("Xin nhập nội dung cần tìm kiếm!");
+            document.getElementById('txtNDTKId').focus();
+            return false;
+        }
+        else {
+            document.frmTK.txtTimKiem.value = txtTK;
+            document.frmTK.submit();
+            return true;
+        }
+        return false;
+    }
+</script>
+@stop

@@ -1,0 +1,266 @@
+@extends('layouts.default')
+@section('content')
+<?php
+$allTheLoais = QuanLyQuanLySach::getAllBooks();
+$allNgonNgus = QuanLyQuanLySach::getNgonNguSach();
+$dauSachs = new QuanLyQuanLySach();
+$isNN = false;
+$isTK = false;
+$isLoc = false;
+$isLocTheLoai = false;
+$idNgonNgu = "";
+$idLoaiSach = "";
+$locTheLoai = "";
+$txtTK = "";
+$stt = 0;
+
+if(Input::has('page'))
+{
+    $stt = (Input::get('page') - 1) * QUAN_LY_SO_DAU_SACH_TREN_TRANG;
+}
+if(Input::has('txtLoaiSach')){
+    $isLoc = true;
+    $idLoaiSach = trim(Input::get('txtLoaiSach'));
+    $isLocTheLoai = true;
+}
+if(Input::has('txtTheLoai')){  
+$locTheLoai = trim(Input::get('txtTheLoai'));
+}
+if(Input::has('txtNgonNgu')){  
+$idNgonNgu = trim(Input::get('txtNgonNgu'));
+}
+$dauSachs = $dauSachs->getDauSach($idNgonNgu,$idLoaiSach,$locTheLoai,$txtTK);
+
+
+?>
+<div class="row-fluid">
+    <div class="box span12">
+        
+            <div class='box'>
+                <div class="box-header">
+                    <h2>
+                        <i class="icon-book"></i>Danh Sách Đầu Sách
+                    </h2>
+                    <div class="box-icon">
+                        <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <div style="display: -webkit-inline-box;">
+                        Ngôn ngữ:
+                    <select class="form-control" style="width:220px!important;" name='selectNgonNgu' id='selectNgonNguId' onchange="thucHienLocNN(document.getElementById('selectNgonNguId').value)">
+                        <option value='allNN' id='AllNNId' <?php if($idNgonNgu == 'allNN') {echo "selected='selected'";}?>>--Tất Cả--</option>
+                           <?php
+                     foreach($allNgonNgus as $ngonngu){   
+                        ?>
+                        <option value='<?=$ngonngu->ngon_ngu_sach?>' id='<?=$ngonngu->ngon_ngu_sach?>Id'  <?php if($idNgonNgu == $ngonngu->ngon_ngu_sach) {echo "selected='selected'";}?>><?=$ngonngu->ngon_ngu_sach?></option>
+                        <?php
+                    }
+                        ?>
+                    </select>
+
+                    Loại sách:
+                    <select class="form-control" style="width:220px!important;" name='selectLoaiSach' id='selectLoaiSachId' onchange="thucHienLoc(document.getElementById('selectLoaiSachId').value,null)">
+                        <option value='all' id='AllId' <?php if($idLoaiSach == 'all') {echo "selected='selected'";}?>>--Tất Cả--</option>
+                        <option value='lv' id='lvId' <?php if($idLoaiSach == 'lv') {echo "selected='selected'";}?>>--Luận Văn--</option>
+                        <option value='tltk' id='tltk' <?php if($idLoaiSach == 'tltk') {echo "selected='selected'";}?>>--Tài Liệu Tham Khảo--</option>
+                    </select>
+                 
+                    <?php
+                    if($isLoc && $idLoaiSach !='all'){
+                        if($idLoaiSach == 'lv')
+                        {
+                    ?>
+                    Thể loại:
+                    <select class="form-control" style="width:220px!important;" name='selectTheLoaiSach' id='selectTheLoaiSachId' onchange="thucHienLoc(document.getElementById('selectLoaiSachId').value,document.getElementById('selectTheLoaiSachId').value)">
+                        <option value='allTL' id='allTLId' <?php if($locTheLoai == 'allTL') {echo "selected='selected'";}?>>--Tất Cả--</option>
+                        <option value='lvdh' id='lvdhId' <?php if($locTheLoai == 'lvdh') {echo "selected='selected'";}?>>--Luận Văn Đại Học--</option>
+                        <option value='lvch' id='lvchId' <?php if($locTheLoai == 'lvch') {echo "selected='selected'";}?>>--Luận Văn Cao Học--</option>
+                    </select>
+                    <?php
+                    }
+                    else{
+                    ?>
+                    Thể loại:
+                    <select class="form-control" style="width:220px!important;" name='selectTheLoaiSach' id='selectTheLoaiSachId' onchange="thucHienLoc(document.getElementById('selectLoaiSachId').value,document.getElementById('selectTheLoaiSachId').value)">
+                        <option value='allTL' id='allTLId' <?php if($locTheLoai == 'allTL') {echo "selected='selected'";}?>>--Tất Cả--</option>
+                        <?php
+                     foreach($allTheLoais as $theLoai){   
+                        ?>
+                        <option value='<?=$theLoai->mo_ta_the_loai?>' id='<?=$theLoai->mo_ta_the_loai?>Id'  <?php if($locTheLoai == $theLoai->mo_ta_the_loai) {echo "selected='selected'";}?>><?=$theLoai->mo_ta_the_loai?></option>
+                        <?php
+                    }
+                        ?>
+                    </select>
+                    <?php
+                    }
+                    }
+                    ?>
+                    <input class="form-control" style="width:220px!important;" type='text' name='txtTim' id='txtTimId' value='' placeholder="Nhập tên sách cần tìm"/>
+                    
+                    </div>
+                    <input type='button' name='btnTimId' id='btnTimId' value='Tìm kiếm' class="btn btn-primary"/>
+                       <table class="table table-striped table-bordered " >
+                           <thead>
+                                <tr>
+                                    <td width="5%">STT</td>
+                                    <td width="20%">Tên đầu sách</td>
+                                    <td width="20%">Giới thiệu</td>
+                                    <td width="10%">Ngôn ngữ</td>
+                                    <td width="10%">Hình ảnh</td>
+                                    <td width="10%">Ghi chú</td>
+                                    <td  width="15%">Tags</td>
+                                    <td width="8%">Trạng thái</td>
+                                    <td width="2%">Xem</td>
+                                </tr>
+                            </thead>    
+                                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                <?php
+                                foreach($dauSachs as $dauSach){
+                                ?>
+                                 <tr class="odd">
+                                        <td class="center"><?= ++$stt ?></td>
+                                        <td class="center"><?=$dauSach->ten_dau_sach?></td>
+                                        <td class="center ">
+                                            <?php if(trim($dauSach->gioi_thieu_sach) == "") 
+                                                {
+                                                echo "<i>Không có mô tả nào.</i>";
+                                                }else{
+                                                  echo $dauSach->gioi_thieu_sach;
+                                                }
+                                                ?>
+                                        </td>
+                                        <td class="center ">
+                                          <?=$dauSach->ngon_ngu_sach?>
+                                        </td>
+                                        <td class='center'>
+                                             <?php
+                                           if(trim($dauSach->link_hinh_anh) == "")
+                                           {
+                                               echo "<img src='".URL."public/images/books/default.png' title='Sách' alt='Sách' width='80px'/>";
+                                           }else{
+                                               echo "<img src='".URL.$dauSach->link_hinh_anh."' title='Sách' alt='Sách' width='80px'/>";
+                                           }?>
+                                        </td>
+                                        <td class="center ">
+                                              <?php if(trim($dauSach->ghi_chu_dau_sach) == "") 
+                                                {
+                                                echo "<i>Không có ghi chú nào.</i>";
+                                                }else{
+                                                  echo $dauSach->ghi_chu_dau_sach;
+                                                }
+                                                ?>
+                                        </td>
+                                        <td class="center ">
+                                             <?php if(trim($dauSach->tags) == "") 
+                                                {
+                                                echo "<i>Không có tags nào.</i>";
+                                                }else{
+                                                  echo $dauSach->tags;
+                                                }
+                                                ?>
+                                         </td>
+                                        <td class="center ">
+                                                <?php
+                                                if($dauSach->trang_thai_dau_sach == 1)
+                                                {
+                                                    echo "Khả dụng";
+                                                }
+                                                else{
+                                                    echo "Không khả dụng";
+                                                }
+                                                ?>
+                                         </td>
+                                         <td>
+                                              <img src="{{URL}}public/images/icon/view.gif" name="" id="" value="" onclick=""  title="Xem đầu sách"/>
+                                         </td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
+                            </tbody>
+                       </table>
+                    <div class="row">
+                        <div class="col-lg-12 center">
+                            <div class="dataTables_paginate paging_bootstrap">
+                                <?php
+                                $link = array();
+                                if($idNgonNgu != "")
+                                {
+                                     $link['txtNgonNgu'] = $idNgonNgu;
+                                }
+                                if($idLoaiSach != "")
+                                {
+                                     $link['txtLoaiSach'] = $idLoaiSach;
+                                }
+                                if($locTheLoai != "")
+                                {
+                                     $link['txtTheLoai'] = $locTheLoai;
+                                }
+                                if($txtTK != "")
+                                {
+                                     $link['txtTimKiem'] = $txtTK;
+                                }
+                                echo $dauSachs->appends($link)->links();
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
+    </div>
+</div>
+<form name="frmLoc" id="frmLocId" method="get" action="<?= URL; ?>mbooks/listbooks">
+    <?php
+    if ($txtTK != null) {
+        ?>
+        <input type="hidden" name="txtTimKiem" id="txtTimKiemId" value="<?= $txtTK; ?>"/>
+        <?php
+    }
+    if ($isLocTheLoai) {
+        ?>
+        <input type="hidden" name="txtTheLoai" id="txtTheLoaiId" value=""/>
+        <?php
+    }
+    if ($idNgonNgu != "") {
+        ?>
+        <input type="hidden" name="txtNgonNgu" id="txtNgonNgu" value="<?=$idNgonNgu?>"/>
+        <?php
+    }
+    ?>
+    <input type="hidden" name="txtLoaiSach" id="txtLoaiSachId" value="" />       
+</form>
+<form name="frmLocNgonNgu" id="frmLocNgonNguId" method="get" action="<?= URL; ?>mbooks/listbooks">
+    <?php
+    if ($txtTK != "") {
+        ?>
+        <input type="hidden" name="txtTimKiem" id="txtTimKiemId" value="<?= $txtTK; ?>"/>
+        <?php
+    }
+    if ($idLoaiSach != "") {
+        ?>
+        <input type="hidden" name="txtLoaiSach" id="txtLoaiSachId" value="<?=$idLoaiSach?>"/>
+        <?php
+    }
+    if ($locTheLoai != "") {
+        ?>
+        <input type="hidden" name="txtTheLoai" id="txtTheLoaiId" value="<?=$locTheLoai?>"/>
+        <?php
+    }?>
+    <input type="hidden" name="txtNgonNgu" id="txtNgonNguId" value="" />   
+</form>
+<script type='text/javascript'>
+        function thucHienLoc(idLoai,idTheLoai) {
+        document.frmLoc.txtLoaiSach.value = idLoai;
+        if(idTheLoai != null){
+        document.frmLoc.txtTheLoai.value = idTheLoai;
+        }
+        document.frmLoc.submit();
+    }
+        function thucHienLocNN(idNN) {
+        document.frmLocNgonNgu.txtNgonNgu.value = idNN;
+        document.frmLocNgonNgu.submit();
+    }
+</script>
+@stop

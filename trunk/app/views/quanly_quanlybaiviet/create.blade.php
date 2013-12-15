@@ -1,0 +1,127 @@
+@extends('layouts.default')
+@section('content')
+@include('fckeditor.fckeditor_php5')
+<form action="<?php echo URL; ?>mthreads/addthreads" method="post" name="formThem"  onsubmit="return checkFormAddThread(this)">
+    <?php echo Form::token(); ?>
+    <div class="row-fluid">
+        <div class="box span12">
+                <div class="box">
+                    <div class="box-header">
+                        <h2><i class="icon-edit"></i>Thêm bài viết</h2>
+                        <div class="box-icon">
+                            <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                        </div>
+                    </div>
+                    <div class="box-content">
+                        <div class="form-group ">
+                            <label class="control-label" for="">Tiêu Đề Bài Viết</label>
+                            <input type="text" class="form-control" name='txtTieuDe' id='txtTieuDeId' value='<?=Input::old('txtTieuDe')?>' placeholder="Tiêu đề bài viết">
+                        </div>
+                        <div class="form-group ">
+                            <label class="control-label" for="">Hiển thị </label>
+                            <input type='checkbox'  name='txtHienThi' id='txtHienThiId' value='true' <?php if(Input::old('txtHienThi')){ echo "checked='checked'";}?>/>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="">Thể loại bài viết</label>
+                            <div class="controls">
+                                <select name="theLoai" class="form-control">
+                                    <option value="" id="allId" selected="selected">---Thể Loại Bài Viết---</option>
+                                    <?php
+                                    foreach ($loaiBai as $lb) {
+                                        ?>
+                                        <option value="<?php echo $lb->id; ?>" id="loai_<?php echo $lb->id; ?>" <?php if(Input::old('theLoai')== $lb->id){ echo "selected='selected'";}?>><?php echo $lb->mo_ta_loai_bai_viet; ?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="control-label" for="">Tóm tắt bài viết</label>
+                            <textarea name="txtTomTatND" class="form-control" id="txtTomTatNDId" style="height:300px; width:500px" placeholder="Tóm tắt bài viết"><?=Input::old('txtTomTatND')?></textarea>
+                        </div>
+                        <div class="form-group ">    
+                            <label class="control-label" for="">Nội dung bài viết</label>
+                            <textarea name="txtNoiDung" class="form-control" id="txtNoiDungId" style="height:300px; width:500px" placeholder="Nội dung bài viết"><?=Input::old('txtNoiDung')?></textarea>
+                        </div>
+                        <div class="form-group ">    
+                            <label class="control-label" for="">Tags bài viết</label>
+                            <input type='text' name="txtTags" id="txtTagsId" class='form-control' placeholder="Tags bài viết cách nhau bởi dấu phẩy (,)" value='<?=Input::old('txtTags')?>'/>
+                        </div>
+                        <input type='submit' class="btn btn-primary" value='Thêm mới' name='submitFormThem'/>
+                        <input type='reset' class="btn btn-prev" onclick='' value='Làm lại' name='resetFormThem'/>
+                        <input type='button' class="btn btn-prev" value='Trang Chủ QL Bài Viết' name='btnTroVe' onclick="location.href = '<?= URL ?>mthreads/listthreads'"/>
+                    </div>
+                </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="<?php echo URL; ?>public/js/fckeditor/fckeditor.js"></script>
+<?php
+if (Session::has('message')) {
+    echo "<script>alert('" . Session::get('message') . "')</script>";
+}
+?>
+<script type="text/javascript">
+    var oFCKeditor1 = new FCKeditor('txtTomTatNDId');
+    oFCKeditor1.BasePath = '<?php echo URL; ?>public/js/fckeditor/';
+    oFCKeditor1.Height = 300;
+    oFCKeditor1.Value = '';
+    //oFCKeditor1.Create() ;
+    oFCKeditor1.ReplaceTextarea();
+    var oFCKeditor2 = new FCKeditor('txtNoiDungId');
+    oFCKeditor2.BasePath = '<?php echo URL; ?>public/js/fckeditor/';
+    oFCKeditor2.Height = 300;
+    oFCKeditor2.Value = '';
+    //oFCKeditor1.Create() ;
+    oFCKeditor2.ReplaceTextarea();
+
+    function checkFormAddThread(string) {
+        var tieuDe = trim(string.txtTieuDe.value);
+        var theLoai = string.theLoai.value;
+        var tomTat = trim(document.getElementById('txtTomTatNDId').value);
+        var noiDung = trim(string.txtNoiDung.value);
+        var tags = trim(string.txtTags.value);
+        if (tieuDe == null || tieuDe == '')
+        {
+            alert('Tiêu đề không được rỗng!');
+            string.txtTieuDe.focus();
+            return false;
+        }
+        
+        else if (theLoai == '' || theLoai == null) {
+            alert('Bạn chưa chọn loại bài viết!');
+            string.theLoai.focus();
+            return false;
+        }
+        else if (tomTat == null || tomTat == '') {
+            alert('Tóm tắt không được rỗng!');
+            string.txtTomTatND.focus();
+            return false;
+        }
+        else if (noiDung == null || noiDung == '') {
+            alert('Nội dung không được rỗng!');
+            string.txtNoiDung.focus();
+            return false;
+        }
+        else {
+            if(!isSpeacialChar(tieuDe))
+                {
+                    alert('Tiêu đề không được chứa các ký tự đặc biệt!');
+                    string.txtTieuDe.focus();
+                    return false;
+                }
+                else if(!isSpeacialChar(tags) && tags != '')
+                {
+                    alert('Tags không được chứa các ký tự đặc biệt!');
+                    string.txtTags.focus();
+                    return false;
+                }
+                else{
+                    return true;
+                }
+        }
+    }
+</script>
+@stop

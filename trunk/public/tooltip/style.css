@@ -1,0 +1,40 @@
+
+#text {margin:0px auto;}
+.hotspot {color:#900; padding-bottom:1px; border-bottom:1px dotted #900; cursor:pointer}
+
+#tt {position:absolute; display:block;background:#666666 }
+#tttop {display:block; height:0px; margin-left:0px; overflow:hidden}
+#ttcont {display:block; color:#FFF;background:#666666}
+#ttbot {display:block; height:0px; margin-left:0px;  overflow:hidden}
+.tooltip-title{
+    background:#0092e6;
+    color: #FFFFFF;
+    padding: 5px;
+    font-weight: bold;
+}
+.tooltip-image{
+     border-left: 1px solid #CCCCCC;
+     border-bottom: 1px solid #CCCCCC;
+     background:lemonchiffon;
+     padding: 5px;
+}
+.tooltip-info{
+    padding: 5px;
+    background:lemonchiffon;
+    border-left: 1px dashed #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    text-align: left;
+    height: 100%;
+    min-width: 200px;
+}
+.tooltip-info-noimage{
+    padding: 5px;
+    background:lemonchiffon;
+    border-left: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    text-align: left;
+    height: 100%;
+    min-width: 200px;
+}

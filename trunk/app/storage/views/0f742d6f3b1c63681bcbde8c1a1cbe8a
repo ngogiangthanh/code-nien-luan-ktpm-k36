@@ -1,0 +1,100 @@
+<?php $__env->startSection('content'); ?>
+<div class="row">
+    <div class="col-lg-7">
+        <div class="box ">
+            <div class="box-header">
+                <h2>
+                    <i class="icon-user"></i>Xem thông tin chi tiết người dùng
+                </h2>
+                <div class="box-icon">
+                    <a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="row">
+                    <div class="box">
+                        <div class="box span3">
+                            <img class="img-rounded" src="<?php echo URL . $nguoiDung->link_avatar; ?>" onerror="this.src='http://localhost/libary_it_1.1/public/images/profiles/no_avatar.gif';" alt="Ảnh đại diện" style="width: 120px;margin: 0px 0px 0px 34px;"/>
+                            </div>
+                            <div class="box span9">
+                                <table class="table table-striped" style="margin: 0px 0px 0px -10px;">
+                                    <tr>
+                                        <td>Mã số thẻ:
+                                        </td>
+                                        <td><?php echo $nguoiDung->ma_so_the; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tên người dùng:</td>
+                                        <td><?php echo $nguoiDung->ho_ten; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Giới tính:</td>
+                                        <td><?php if ($nguoiDung->gioi_tinh == 1) {
+                                            echo "Nữ";
+                                        } else {
+                                            echo "Nam";
+                                        } ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ngày sinh:</td>
+                                        <td><?php echo date("d/m/Y", strtotime($nguoiDung->ngay_sinh)); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quyền hạn:</td>
+                                        <td><?php
+                                        switch ($nguoiDung->id_nhom_quyen_han) {
+                                            case 1: echo "Quản lý";
+                                                break;
+                                            case 2: echo "Thủ thư";
+                                                break;
+                                            case 3: echo "Người mượn cán bộ";
+                                                break;
+                                            case 4: echo "Người mượn sinh viên";
+                                                break;
+                                        }
+                                        ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Địa chỉ: </td>
+                                        <td><?php echo $nguoiDung->dia_chi; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Đơn vị công tác: </td>
+                                        <td><?php echo $nguoiDung->don_vi_cong_tac; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Số điện thoại: </td>
+                                        <td><?php echo $nguoiDung->sdt; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email:</td>
+                                        <td><?php echo $nguoiDung->email; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ngày cấp thẻ : </td>
+                                        <td><?php echo date("d/m/Y", strtotime($nguoiDung->ngay_cap_the)); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ngày hết hạn: </td>
+                                        <td><?php echo date("d/m/Y", strtotime($nguoiDung->ngay_het_han)); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Trạng thái: </td>
+                                        <td><?php if($nguoiDung->trang_thai_hoat_dong) {echo "Đang hoạt động";}else{echo "Không hoạt động";}?></td>
+                                    </tr>
+
+                                </table>
+
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='<?php echo URL;?>musers/listusers'">Trở lại danh sách người dùng</button>
+            <a ></a>
+        </div>
+    </div>
+</div>
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
